@@ -10,14 +10,16 @@ type SubmitObject = {
   text: string
   isComplete: boolean
 }
+
 type ListProps = {
   todos: any,
   completeTodo: (id: number) => void
   deleteTodo: (id: number) => void
   updateTodo: (id: number, value: string) => void
-  checkAll: ()=>void
+  checkAll: () => void
   show: number
 }
+
 type TodoState = {
   edit: {
     id: number,
@@ -25,6 +27,7 @@ type TodoState = {
     isComplete: boolean
   }
 }
+
 export default class Todo extends Component<ListProps, TodoState> {
   constructor(props: ListProps) {
     super(props);
@@ -36,6 +39,7 @@ export default class Todo extends Component<ListProps, TodoState> {
       }
     }
   }
+
   handleUpdate(e: { id: number, text: string, isComplete: boolean }) {
     this.props.updateTodo(this.state.edit.id, e.text);
     this.setState({
@@ -46,6 +50,7 @@ export default class Todo extends Component<ListProps, TodoState> {
       }
     })
   }
+
   changeState(newId: number, newVal: string, newBool: boolean) {
     this.setState({
       edit: {
@@ -55,14 +60,15 @@ export default class Todo extends Component<ListProps, TodoState> {
       }
     })
   }
+
   render() {
     return (
       this.props.todos.map((todo: SubmitObject, index: number) => (
         <div
-          className={"todo-row " + (todo.isComplete?"complete ":"") + (todo.isComplete ?this.props.show === 1? "one" : "":"") + (!todo.isComplete ? this.props.show === 2? "two":"":"")}
+          className={"todo-row " + (todo.isComplete ? "complete " : "") + (todo.isComplete ? this.props.show === 1 ? "one" : "" : "") + (!todo.isComplete ? this.props.show === 2 ? "two" : "" : "")}
           key={index}
         >
-          <div className="todo-container" key={todo.id}>  
+          <div className="todo-container" key={todo.id}>
             <div className="div-contents">
               {!todo.isComplete ? (<VscCircleLargeOutline
                 onClick={() => this.props.completeTodo(todo.id)}
@@ -73,7 +79,7 @@ export default class Todo extends Component<ListProps, TodoState> {
                 onDoubleClick={() => this.changeState(todo.id, todo.text, todo.isComplete)}
               >
                 {this.state.edit.id === todo.id ? (     // update todo                         
-                  <TextArea edit={this.state.edit} onSubmit={(e) => this.handleUpdate(e)}  checkAll = {()=>this.props.checkAll()}/>
+                  <TextArea edit={this.state.edit} onSubmit={(e) => this.handleUpdate(e)} checkAll={() => this.props.checkAll()} />
                 ) : (
                   <div className={todo.isComplete ? "complete" : ""}>{todo.text}</div>)}
 

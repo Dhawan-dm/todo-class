@@ -1,8 +1,6 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import List from './components/List/List';
 import Heading from './components/Heading/Heading';
+import './App.css';
 
 function App() {
   return (
