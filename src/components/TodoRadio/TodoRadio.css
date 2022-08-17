@@ -1,0 +1,37 @@
+.todo-radio{
+    display: flex;
+    margin-left: 500px;
+    width: 34%;
+    background-color: white;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    padding-right: 0px !important;
+    cursor: pointer;
+}
+.item{
+    font-size: 16px;
+    padding-left: 5px;
+    width: 20% !important;
+    margin-left: 5px !important;
+}
+.todo-selection{
+    display: flex;
+    width: 100%;
+    padding-left: 40px;
+    margin-top: 2px;
+    /* padding: 0px 15px; */
+    padding-left: 15px;
+    font-size: 13px;
+}
+.radio-button{
+    margin-left: 30px;
+    padding: 5px;
+}
+.radio-button:hover{
+    border: .5px solid rgba(83, 82, 82, 0.461);
+    border-radius: 3px;
+}
+.clear-completed{
+    margin-left:50px;
+}
