@@ -41,6 +41,7 @@ export default class TextArea extends Component<TextAreaProps, TextAreaState> {
             text: this.state.input,
             isComplete: false
         })
+        this.setState({input:''})
     }
 
     render() {
