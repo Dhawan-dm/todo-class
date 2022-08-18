@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './TodoRadio.css'
 
 type TextRadioProps = {
-  list: (e: number) => void,
+  list: (e: "active"|"all"|"completed"|"clear") => void,
   size: number
 }
 
@@ -17,8 +17,8 @@ export default class TodoRadio extends Component<TextRadioProps, TextRadioState>
     this.state = { check: '' }
   }
 
-  handleList(number: number, e: React.MouseEvent<HTMLElement>) { //taking number as the list clicked and e for id of the event
-    this.props.list(number);
+  handleList(show: "active"|"all"|"completed"|"clear", e: React.MouseEvent<HTMLElement>) { //taking number as the list clicked and e for id of the event
+    this.props.list(show);
     if (this.state.check) {
       const remove = document.getElementById(this.state.check);
       if (remove !== null)
@@ -36,12 +36,12 @@ export default class TodoRadio extends Component<TextRadioProps, TextRadioState>
   render() {
     return (
       <div className='todo-radio'>
-        <div className="item" onClick={() => this.props.list(-2)}> {this.props.size} items</div>
+        <div className="item"> {this.props.size} items</div>
         <div className="todo-selection">
-          <div className="radio-button" id="all" onClick={(e) => this.handleList(-2, e)}>All</div>
-          <div className="radio-button" id='active' onClick={(e) => this.handleList(1, e)}>Active</div>
-          <div className="radio-button" id='completed' onClick={(e) => this.handleList(2, e)}>Completed</div>
-          <div className="radio-button clear-completed" onClick={() => this.props.list(-1)}>Clear Completed</div>
+          <div className="radio-button" id="all" onClick={(e) => this.handleList("all", e)}>All</div>
+          <div className="radio-button" id='active' onClick={(e) => this.handleList("active", e)}>Active</div>
+          <div className="radio-button" id='completed' onClick={(e) => this.handleList("completed", e)}>Completed</div>
+          <div className="radio-button clear-completed" onClick={() => this.props.list("clear")}>Clear Completed</div>
         </div>
 
       </div>

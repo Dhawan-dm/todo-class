@@ -17,7 +17,7 @@ type ListProps = {
   deleteTodo: (id: number) => void
   updateTodo: (id: number, value: string) => void
   checkAll: () => void
-  show: number
+  show: "active"|"all"|"completed"|"clear"
 }
 
 type TodoState = {
@@ -65,7 +65,7 @@ export default class Todo extends Component<ListProps, TodoState> {
     return (
       this.props.todos.map((todo: SubmitObject, index: number) => (
         <div
-          className={"todo-row " + (todo.isComplete ? "complete " : "") + (todo.isComplete ? this.props.show === 1 ? "one" : "" : "") + (!todo.isComplete ? this.props.show === 2 ? "two" : "" : "")}
+          className={"todo-row " + (todo.isComplete ? "complete " : "") + (todo.isComplete ? this.props.show === "active" ? "one" : "" : "") + (!todo.isComplete ? this.props.show === "completed" ? "two" : "" : "")}
           key={index}
         >
           <div className="todo-container" key={todo.id}>

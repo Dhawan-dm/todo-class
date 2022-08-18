@@ -14,9 +14,7 @@ type ListState = {
     text: string,
     isComplete: boolean
   }[],
-  show: number,
-  check: number,
-  size : number
+  filter : "all"|"active"|"completed"|"clear"
 }
 
 export default class List extends Component<AppProps, ListState> {
@@ -25,9 +23,7 @@ export default class List extends Component<AppProps, ListState> {
     super(props);
     this.state = {
       todos: [],
-      show: -2,
-      check: 0,
-      size:0
+      filter:'all'
     }
   }
 
@@ -42,7 +38,7 @@ export default class List extends Component<AppProps, ListState> {
       return;
     }
     const newTodo = [e, ...this.state.todos];                 // add todo
-    this.setState({ todos: newTodo, size:this.state.size + 1});
+    this.setState({ todos: newTodo});
   }
 
   updatedTodo(id: number, value: string) {
@@ -61,7 +57,7 @@ export default class List extends Component<AppProps, ListState> {
         return todo;
       }
     })                                            // remove todo
-    this.setState({ todos: newTodos, size:this.state.size - 1 });
+    this.setState({ todos: newTodos});
   }
 
   completeTodo(id: number) {
@@ -74,8 +70,8 @@ export default class List extends Component<AppProps, ListState> {
     this.setState({ todos: checkedTodo });
   }
 
-  requiredList(radio: number) {
-    if (radio === -1) {
+  requiredList(radio: "all"|"active"|"completed"|"clear") {
+    if (radio === "clear") {
       let newTodos = this.state.todos.filter((todo) => {
         if (!todo.isComplete) {
           return todo;
@@ -84,7 +80,7 @@ export default class List extends Component<AppProps, ListState> {
       this.setState({ todos: newTodos })
     }
     else {                                        //filter todo
-      this.setState({ show: radio });
+      this.setState({ filter: radio });
     }
   }
 
@@ -92,11 +88,11 @@ export default class List extends Component<AppProps, ListState> {
     let completeTodo = this.state.todos.map((todo) => {
       if (!todo.isComplete) {
         todo.isComplete = !todo.isComplete;
-        this.setState({ check: 1 });
+        this.setState({ filter:"completed" });
       }
       return todo;                                 // check all todos
     })
-    if (this.state.check === 1) {
+    if (this.state.filter === "all") {
       this.uncheckAll();
     }
     this.setState({ todos: completeTodo});
@@ -110,15 +106,15 @@ export default class List extends Component<AppProps, ListState> {
       return todo;
     })                                            // uncheck all todos
     this.setState({ todos: incompleteTodo });
-    this.setState({check:0})
+    this.setState({filter:"all"})
   }
   
   render() {
     return (
       <div className='container'>
         <Textarea edit={this.edit} onSubmit={(e) => this.addTodo(e)} checkAll = {()=>this.checkAll()}/>
-        <Todo todos={this.state.todos} completeTodo={(e) => this.completeTodo(e)} deleteTodo={(e) => this.deleteTodo(e)} updateTodo={(id, value) => this.updatedTodo(id, value)} show={this.state.show} checkAll = {()=>this.checkAll()}/>
-        {this.state.todos.length ? (<TodoRadio list={(e) => this.requiredList(e)} size = {this.state.size} />) : (<div></div>)}
+        <Todo todos={this.state.todos} completeTodo={(e) => this.completeTodo(e)} deleteTodo={(e) => this.deleteTodo(e)} updateTodo={(id, value) => this.updatedTodo(id, value)} show={this.state.filter} checkAll = {()=>this.checkAll()}/>
+        {this.state.todos.length ? (<TodoRadio list={(e) => this.requiredList(e)} size = {this.state.todos.length} />) : (<div></div>)}
       </div>
     )
   }
