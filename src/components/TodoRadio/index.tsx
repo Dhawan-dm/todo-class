@@ -1,24 +1,28 @@
 import React, { Component } from 'react'
-import './TodoRadio.css'
+import { connect } from 'react-redux';
+import { requiredList } from "../../store/actions/index";
+import './style.css'
+import { reducersType } from '../../store/reducers';
 
-type TextRadioProps = {
-  list: (e: "active"|"all"|"completed"|"clear") => void,
+
+interface TextRadioProps{
   size: number
+  reqList: (e: string) => void,
 }
 
-type TextRadioState = {
+interface TextRadioState {
   check: string
 }
 
-export default class TodoRadio extends Component<TextRadioProps, TextRadioState> {
+export class TodoRadio extends Component<TextRadioProps, TextRadioState> {
 
   constructor(props: TextRadioProps) {
     super(props)
     this.state = { check: '' }
   }
 
-  handleList(show: "active"|"all"|"completed"|"clear", e: React.MouseEvent<HTMLElement>) { //taking number as the list clicked and e for id of the event
-    this.props.list(show);
+  handleList(show: string, e: React.MouseEvent<HTMLElement>) { //taking number as the list clicked and e for id of the event
+    this.props.reqList(show);
     if (this.state.check) {
       const remove = document.getElementById(this.state.check);
       if (remove !== null)
@@ -41,10 +45,26 @@ export default class TodoRadio extends Component<TextRadioProps, TextRadioState>
           <div className="radio-button" id="all" onClick={(e) => this.handleList("all", e)}>All</div>
           <div className="radio-button" id='active' onClick={(e) => this.handleList("active", e)}>Active</div>
           <div className="radio-button" id='completed' onClick={(e) => this.handleList("completed", e)}>Completed</div>
-          <div className="radio-button clear-completed" onClick={() => this.props.list("clear")}>Clear Completed</div>
+          <div className="radio-button clear-completed" onClick={() => this.props.reqList("clear")}>Clear Completed</div>
         </div>
 
       </div>
     )
   }
 }
+
+const mapsDispatchToProps = (dispatch: any) => {
+  return {
+    reqList: (show: string) => dispatch(requiredList(show))
+  }
+}
+
+const mapsStateToProps = (state: reducersType) => {
+  return {
+    todo: state.todos,
+    filter: state.filter
+  }
+}
+
+export default connect(mapsStateToProps, mapsDispatchToProps)(TodoRadio)
+

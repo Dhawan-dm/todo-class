@@ -1,26 +1,29 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
 import { ImCross } from "react-icons/im";
 import { VscCircleLargeOutline } from "react-icons/vsc";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import TextArea from "../TextArea/TextArea";
-import './Todo.css'
+import { deleteTodo, updateTodo, completeTodo } from "../../store/actions/index";
+import { reducersType } from '../../store/reducers';
+import TextArea from "../TextArea";
+import './style.css'
+import { Dispatch } from 'redux';
 
-type SubmitObject = {
+interface SubmitObject {
   id: number,
   text: string
   isComplete: boolean
 }
 
-type ListProps = {
-  todos: any,
-  completeTodo: (id: number) => void
-  deleteTodo: (id: number) => void
-  updateTodo: (id: number, value: string) => void
-  checkAll: () => void
-  show: "active"|"all"|"completed"|"clear"
+interface ListProps {
+  todo: { id: number, text: string, isComplete: boolean }[],
+  complete: (id: number) => void
+  remove: (id: number) => void
+  update: (id: number, value: string) => void
+  filter: string
 }
 
-type TodoState = {
+interface TodoState {
   edit: {
     id: number,
     value: string,
@@ -28,7 +31,7 @@ type TodoState = {
   }
 }
 
-export default class Todo extends Component<ListProps, TodoState> {
+class Todo extends Component<ListProps, TodoState> {
   constructor(props: ListProps) {
     super(props);
     this.state = {
@@ -41,7 +44,7 @@ export default class Todo extends Component<ListProps, TodoState> {
   }
 
   handleUpdate(e: { id: number, text: string, isComplete: boolean }) {
-    this.props.updateTodo(this.state.edit.id, e.text);
+    this.props.update(this.state.edit.id, e.text)
     this.setState({
       edit: {
         id: -1,
@@ -63,30 +66,30 @@ export default class Todo extends Component<ListProps, TodoState> {
 
   render() {
     return (
-      this.props.todos.map((todo: SubmitObject, index: number) => (
+      this.props.todo.map((todo: SubmitObject, index: number) => (
         <div
-          className={"todo-row " + (todo.isComplete ? "complete " : "") + (todo.isComplete ? this.props.show === "active" ? "one" : "" : "") + (!todo.isComplete ? this.props.show === "completed" ? "two" : "" : "")}
+          className={"todo-row " + (todo.isComplete ? "complete " : "") + (todo.isComplete ? this.props.filter === "active" ? "one" : "" : "") + (!todo.isComplete ? this.props.filter === "completed" ? "two" : "" : "")}
           key={index}
         >
           <div className="todo-container" key={todo.id}>
             <div className="div-contents">
               {!todo.isComplete ? (<VscCircleLargeOutline
-                onClick={() => this.props.completeTodo(todo.id)}
+                onClick={() => this.props.complete(todo.id)}
               ></VscCircleLargeOutline>) :
-                <AiOutlineCheckCircle onClick={() => this.props.completeTodo(todo.id)}></AiOutlineCheckCircle>}
+                <AiOutlineCheckCircle onClick={() => this.props.complete(todo.id)}></AiOutlineCheckCircle>}
               <div
                 className="todo-div"
                 onDoubleClick={() => this.changeState(todo.id, todo.text, todo.isComplete)}
               >
                 {this.state.edit.id === todo.id ? (     // update todo                         
-                  <TextArea edit={this.state.edit} onSubmit={(e) => this.handleUpdate(e)} checkAll={() => this.props.checkAll()} />
+                  <TextArea type={"update"} onSubmit={(e) => this.handleUpdate(e)} />
                 ) : (
                   <div className={todo.isComplete ? "complete" : ""}>{todo.text}</div>)}
 
               </div>
               <ImCross
                 className="todo-icon"
-                onClick={() => this.props.deleteTodo(todo.id)}
+                onClick={() => this.props.remove(todo.id)}
               ></ImCross>
             </div>
           </div>
@@ -96,3 +99,19 @@ export default class Todo extends Component<ListProps, TodoState> {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    update: (id: number, value: string) => dispatch(updateTodo(id, value)),
+    remove: (id: number) => dispatch(deleteTodo(id)),
+    complete: (id: number) => dispatch(completeTodo(id))
+  }
+}
+const mapStateToProps = (state: reducersType) => {
+  return {
+    todo: state.todos,
+    filter: state.filter
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todo)

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './Heading.css'
+import './style.css'
 
 export default class Todos extends Component {
   render() {
